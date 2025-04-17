@@ -1,0 +1,130 @@
+import React, { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import matter from "gray-matter";
+
+function Navbar() {
+  return (
+    <nav className="bg-white shadow p-4 text-center space-x-4 text-green-700">
+      <a href="/" className="font-semibold">Home</a>
+      <a href="/blog" className="hover:underline">Blog</a>
+      <a href="/volunteer" className="hover:underline">Volunteer</a>
+      <a href="#contact" className="hover:underline">Contact</a>
+    </nav>
+  );
+}
+
+function Blog() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    async function fetchMarkdown() {
+      const files = [
+        "intro.md",
+        "retreat-recap.md"
+      ];
+
+      const fetchedPosts = await Promise.all(
+        files.map(async (file) => {
+          const res = await fetch(`/posts/${file}`);
+          const text = await res.text();
+          const { data } = matter(text);
+          return { title: data.title, date: data.date, summary: data.summary };
+        })
+      );
+
+      setPosts(fetchedPosts);
+    }
+
+    fetchMarkdown();
+  }, []);
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-green-800 mb-6">Guruwani Blog</h1>
+      {posts.map((post, i) => (
+        <div key={i} className="mb-6 border-b pb-4">
+          <h2 className="text-xl font-semibold">{post.title}</h2>
+          <p className="text-gray-600 text-sm">{post.date}</p>
+          <p className="text-gray-700 mt-2">{post.summary}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Volunteer() {
+  return (
+    <div className="p-6 max-w-xl mx-auto">
+      <h1 className="text-3xl font-bold text-green-800 mb-6">Volunteer with Us</h1>
+      <p className="mb-4 text-gray-700">Join our mission to bring healing to those in need. We welcome doctors, therapists, cooks, yogis, and empathetic souls.</p>
+      <form action="https://formspree.io/f/your-volunteer-form-id" method="POST" className="space-y-4">
+        <input name="name" placeholder="Your Name" className="w-full p-2 border border-gray-300 rounded" required />
+        <input type="email" name="email" placeholder="Your Email" className="w-full p-2 border border-gray-300 rounded" required />
+        <textarea name="why" placeholder="Why do you want to volunteer?" className="w-full p-2 border border-gray-300 rounded" rows="4" required />
+        <button type="submit" className="w-full bg-green-600 text-white py-2 rounded">Submit</button>
+      </form>
+    </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-6">
+      <Navbar />
+      <header className="text-center py-10">
+        <h1 className="text-4xl font-bold text-green-800">Guruwani Arogya Dham</h1>
+        <p className="text-lg mt-2 text-gray-600">A Retreat for Healing, Balance, and Inner Peace</p>
+      </header>
+
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold text-green-700">General OPD</h2>
+            <p className="mt-2 text-sm text-gray-600">Compassionate, affordable medical care for rural and urban patients.</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold text-green-700">De-addiction Support</h2>
+            <p className="mt-2 text-sm text-gray-600">A safe space for recovery, transformation, and soulful rehabilitation.</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold text-green-700">Retreats & Wellness</h2>
+            <p className="mt-2 text-sm text-gray-600">Spiritual, emotional, and physical detox in nature-inspired silence.</p>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="mt-12 px-6 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-semibold text-green-800 mb-4">A Part of the Guruwani Project</h2>
+        <p className="text-gray-700">Guruwani Arogya Dham is a healing arm of the broader Guruwani Project — a mission to bring spiritual, psychological, and social transformation through silent strength, ancient wisdom, and modern expression. Through retreats, media, community outreach, and education, the Guruwani Project envisions a world rooted in harmony rather than hustle.</p>
+      </section>
+
+      <section id="contact" className="mt-12 text-center">
+        <h3 className="text-2xl font-semibold text-green-800 mb-4">Contact Us</h3>
+        <form action="https://formspree.io/f/your-form-id" method="POST" className="space-y-4 max-w-md mx-auto">
+          <input type="text" name="name" placeholder="Your Name" className="w-full p-2 border border-gray-300 rounded" required />
+          <input type="email" name="email" placeholder="Your Email" className="w-full p-2 border border-gray-300 rounded" required />
+          <textarea name="message" placeholder="Your Message" className="w-full p-2 border border-gray-300 rounded" rows="4" required></textarea>
+          <Button type="submit" className="w-full bg-green-600 text-white">Send Message</Button>
+        </form>
+        <div className="mt-6">
+          <p className="text-gray-600">Follow us:</p>
+          <div className="flex justify-center space-x-4 mt-2">
+            <a href="https://youtube.com/@ProjectGuruwani" className="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://instagram.com/ProjectGuruwani" className="text-pink-500 hover:underline" target="_blank" rel="noopener noreferrer">Instagram</a>
+          </div>
+        </div>
+      </section>
+
+      <footer className="mt-16 text-center text-sm text-gray-500">
+        © 2025 Guruwani Arogya Dham. Rooted in Healing. Part of the Guruwani Project.
+      </footer>
+    </div>
+  );
+}
